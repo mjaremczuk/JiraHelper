@@ -73,7 +73,7 @@ actual fun removeFixVersions(versionId: List<String>) {
     }
 }
 
-actual fun getApiCredentials(): Credentials? {
+fun getDesktopApiCredentials(): Credentials? {
     return transaction {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(CredentialsDao)
@@ -98,7 +98,7 @@ actual fun getApiCredentials(): Credentials? {
     }
 }
 
-actual fun updateApiCredentials(credentials: Credentials) {
+fun updateDesktopApiCredentials(credentials: Credentials) {
     return transaction {
         addLogger(StdOutSqlLogger)
         if (credentials.id != null) {

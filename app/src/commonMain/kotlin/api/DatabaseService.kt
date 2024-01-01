@@ -1,15 +1,15 @@
 package api
 
 import api.data.Credentials
-import getApiCredentials
 import getFixVersionList
 import presentation.FixVersion
 import removeFixVersions
 import saveFixVersions
-import updateApiCredentials
 import updateFixVersionName
 
-class DatabaseService() : DatabaseApi {
+class DatabaseService(
+    private val storageApi: StorageApi,
+) : DatabaseApi {
     override fun save(fixVersions: List<FixVersion>): Boolean {
         return saveFixVersions(fixVersions)
     }
@@ -22,12 +22,12 @@ class DatabaseService() : DatabaseApi {
         removeFixVersions(versionIds)
     }
 
-    override fun getCredentials(): Credentials? {
-        return getApiCredentials()
+    override suspend fun getCredentials(): Credentials? {
+        return storageApi.getApiCredentials()
     }
 
-    override fun updateCredentials(credentials: Credentials) {
-        updateApiCredentials(credentials)
+    override suspend fun updateCredentials(credentials: Credentials) {
+        storageApi.updateApiCredentials(credentials)
     }
 
     override fun getFixVersions(): List<FixVersion> {

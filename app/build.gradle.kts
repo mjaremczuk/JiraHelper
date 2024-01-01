@@ -25,7 +25,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+            baseName = "JiraHelper"
             isStatic = true
         }
     }
@@ -40,6 +40,7 @@ kotlin {
 
             implementation(libs.koin.android)
             implementation(libs.ktor.client.okhttp)
+            implementation("androidx.datastore:datastore-preferences:1.0.0")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -141,15 +142,16 @@ compose.desktop {
         }
 
         nativeDistributions {
+            val appVersion = "1.2.3"
             modules("java.sql")
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "JiraHelper"
-            packageVersion = "1.2.3"
-            version = "1.2.2"
+            packageVersion = appVersion
+            version = appVersion
             description = "Jira Helper App"
             copyright = "© 2023 Michal Jaremczuk. All rights reserved."
             macOS {
-                packageBuildVersion = "1.2.3"
+                packageBuildVersion = appVersion
             }
         }
     }

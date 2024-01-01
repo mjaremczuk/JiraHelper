@@ -21,7 +21,7 @@ val commonModules = module(true) {
     single { httpClient() }
     single<JiraApi> { JiraService(get(), get(), get(), get(), Dispatchers.IO) }
     single<JiraProjectApi> { JiraProjectService() }
-    single<DatabaseApi> { DatabaseService() }
+    single<DatabaseApi> { DatabaseService(get()) }
     single<CredentialsApi> { CredentialsService(get()) }
     factory {
         HomeViewModel(

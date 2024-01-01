@@ -2,7 +2,9 @@ package api
 
 import api.data.Credentials
 
-class CredentialsService(private val databaseApi: DatabaseApi) : CredentialsApi {
+class CredentialsService(
+    private val databaseApi: DatabaseApi
+) : CredentialsApi {
 
     private var saved: Credentials? = null
 
