@@ -22,9 +22,7 @@ class AndroidStorageProvider(private val context: Context) : StorageApi {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "credentials")
     override suspend fun getApiCredentials(): Credentials? {
         return context.dataStore.data.map {
-            val data = Json.decodeFromString<Credentials?>(it[CREDENTIALS_KEY].orEmpty())
-            println("stored: $data")
-            data
+            Json.decodeFromString<Credentials?>(it[CREDENTIALS_KEY].orEmpty())
         }.firstOrNull()
     }
 

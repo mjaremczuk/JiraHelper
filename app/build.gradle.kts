@@ -118,6 +118,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
+            proguardFiles("proguard-rules.pro")
+        }
+        getByName("debug") {
+            isMinifyEnabled = false
         }
     }
     compileOptions {
@@ -136,6 +140,7 @@ compose.desktop {
         buildTypes {
             release {
                 proguard {
+//                    configurationFiles.from("proguard-rules.pro")
                     isEnabled = false
                 }
             }
