@@ -2,6 +2,7 @@ package api
 
 import api.data.Credentials
 import presentation.FixVersion
+import presentation.JiraProject
 
 interface DatabaseApi {
     fun save(fixVersions: List<FixVersion>): Boolean
@@ -11,4 +12,7 @@ interface DatabaseApi {
 
     suspend fun getCredentials(): Credentials?
     suspend fun updateCredentials(credentials: Credentials)
+    suspend fun getProjects(): List<JiraProject>
+    suspend fun addProject(project: JiraProject)
+
 }

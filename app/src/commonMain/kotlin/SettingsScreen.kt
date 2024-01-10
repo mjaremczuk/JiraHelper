@@ -32,6 +32,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import api.data.Credentials
+import components.InputItem
+import components.LoadingScreen
+import components.LogCompositions
 import moe.tlaster.precompose.koin.koinViewModel
 import moe.tlaster.precompose.navigation.Navigator
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -45,6 +48,8 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = koinViewModel(vmClass = SettingsViewModel::class)
 ) {
     val clipboardManager = LocalClipboardManager.current
+
+    val state = remember { viewModel.uiState }
 
     Column {
         TopAppBar(
@@ -67,7 +72,14 @@ fun SettingsScreen(
                         modifier = Modifier
                             .clickable {
                                 viewModel.saveChanges()
-                                navigator.goBack()
+                            }
+                            .padding(16.dp)
+                    )
+                    Text(
+                        "Add project",
+                        modifier = Modifier
+                            .clickable {
+                                navigator.navigate(Route.AddProject.path)
                             }
                             .padding(16.dp)
                     )
@@ -76,15 +88,22 @@ fun SettingsScreen(
             backgroundColor = Color.Blue,
             contentColor = Color.White
         )
-        SettingsContent(
-            credentials = viewModel.credentials,
-            onEmailUpdated = { viewModel.updateUserName(it) },
-            onTokenUpdated = { viewModel.updateToken(it) },
-            onBaseUrlUpdated = { viewModel.updateBaseUrl(it) },
-            onCopyToClipboard = {
-                clipboardManager.setText(it)
+
+        when (val value = state.value) {
+            SettingsViewModel.SettingState.Loading -> LoadingScreen()
+            is SettingsViewModel.SettingState.Success -> {
+                SettingsContent(
+                    credentials = value.credentials,
+                    onEmailUpdated = { viewModel.updateUserName(it) },
+                    onTokenUpdated = { viewModel.updateToken(it) },
+                    onBaseUrlUpdated = { viewModel.updateBaseUrl(it) },
+                    onCopyToClipboard = {
+                        clipboardManager.setText(it)
+                    }
+                )
             }
-        )
+        }
+
     }
 }
 
@@ -97,19 +116,20 @@ fun SettingsContent(
     onCopyToClipboard: (AnnotatedString) -> Unit
 ) {
     val listState = rememberScrollState()
+    LogCompositions("Setting content")
     Column(
         modifier = Modifier.padding(16.dp)
             .fillMaxWidth()
             .verticalScroll(listState),
     ) {
-        SettingItem(
+        InputItem(
             credentials?.username.orEmpty(),
             "User name used to authorize requests",
             onEmailUpdated
         )
         Spacer(Modifier.height(16.dp))
 
-        SettingItem(
+        InputItem(
             credentials?.token.orEmpty(),
             "Token used to authorize requests",
             onTokenUpdated
@@ -117,7 +137,7 @@ fun SettingsContent(
         ClickableUrl(onCopyToClipboard)
         Spacer(Modifier.height(16.dp))
 
-        SettingItem(
+        InputItem(
             credentials?.baseUrl.orEmpty(),
             "Tickets base url",
             onBaseUrlUpdated

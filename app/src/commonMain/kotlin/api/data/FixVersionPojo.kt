@@ -10,5 +10,5 @@ data class FixVersionPojo(
     @SerialName("archived") val archived: Boolean,
     @SerialName("released") val released: Boolean,
     @SerialName("self") val url: String,
-    @SerialName("projectId") val projectId: Long,
+    @SerialName("projectId") val projectId: Int,
 )

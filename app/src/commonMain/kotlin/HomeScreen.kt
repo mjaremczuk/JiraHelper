@@ -28,11 +28,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -41,7 +41,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -58,6 +57,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import components.LoadingScreen
 import components.LogCompositions
 import moe.tlaster.precompose.navigation.Navigator
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -119,18 +119,13 @@ fun MainScreen(
         },
         content = {
             when (state) {
-                Loading ->
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
+                Loading -> LoadingScreen()
 
                 is Success -> HomeContentScreen(
-                    (state as Success).versions,
-                    updateAction,
-                    onVersionClickAction,
+                    fixVersions = (state as Success).versions,
+                    updateAction = updateAction,
+                    onVersionClickAction = onVersionClickAction,
+                    onGoToSettingsClickAction = { navigator.navigate(Route.Settings.path) }
                 )
 
                 is Error -> HomeErrorScreen(navigator, state as Error)
@@ -148,6 +143,7 @@ fun HomeContentScreen(
     fixVersions: List<VersionModel>,
     updateAction: (model: VersionModel, index: Int) -> Unit,
     onVersionClickAction: (model: VersionModel) -> Unit,
+    onGoToSettingsClickAction: () -> Unit,
 ) {
     LogCompositions("Home content screen")
     val hovered = remember { mutableStateOf<VersionModel?>(null) }
@@ -168,13 +164,25 @@ fun HomeContentScreen(
                     style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
                 )
                 if (fixVersions.isEmpty()) {
-//                    todo show empty state
-                    Column(
+//                    TODO convert to reusable component
+                    Box(
                         modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
+                        contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator()
+                        Column(
+                            modifier = Modifier,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text("Nothing to show here, update your settings or add projects")
+                            TextButton(
+                                onClick = {
+                                    onGoToSettingsClickAction()
+                                },
+                                content = {
+                                    Text("Go to settings")
+                                }
+                            )
+                        }
                     }
                 } else {
                     LazyVerticalGrid(

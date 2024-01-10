@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import presentation.JiraProject
 
 class AndroidStorageProvider(private val context: Context) : StorageApi {
 
@@ -30,5 +31,12 @@ class AndroidStorageProvider(private val context: Context) : StorageApi {
         context.dataStore.edit {
             it[CREDENTIALS_KEY] = Json.encodeToString<Credentials>(credentials)
         }
+    }
+
+    override fun getProjects(): List<JiraProject> {
+        return emptyList()
+    }
+
+    override fun addProject(project: JiraProject) {
     }
 }

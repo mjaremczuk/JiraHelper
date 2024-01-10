@@ -3,6 +3,7 @@ package api
 import api.data.Credentials
 import getFixVersionList
 import presentation.FixVersion
+import presentation.JiraProject
 import removeFixVersions
 import saveFixVersions
 import updateFixVersionName
@@ -32,5 +33,13 @@ class DatabaseService(
 
     override fun getFixVersions(): List<FixVersion> {
         return getFixVersionList()
+    }
+
+    override suspend fun getProjects(): List<JiraProject> {
+        return storageApi.getProjects()
+    }
+
+    override suspend fun addProject(project: JiraProject) {
+        storageApi.addProject(project)
     }
 }

@@ -15,5 +15,6 @@ sealed class Route(val path: String) {
 
     data object CreateFixVersion : Route("/create-fix-version")
     data object Settings : Route("/settings")
+    data object AddProject : Route("/add/project")
 
 }

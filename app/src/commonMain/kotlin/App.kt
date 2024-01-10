@@ -17,6 +17,7 @@ import moe.tlaster.precompose.navigation.rememberNavigator
 import moe.tlaster.precompose.navigation.transition.NavTransition
 import org.koin.compose.KoinApplication
 import presentation.HomeViewModel
+import screens.AddProjectScreen
 
 @Composable
 fun App() {
@@ -108,6 +109,12 @@ fun Navigation(windowSizeClass: WindowSizeClass) {
             SettingsScreen(
                 navigator
             )
+        }
+        scene(
+            route = Route.AddProject.path,
+            navTransition = NavTransition()
+        ) {
+            AddProjectScreen(navigator)
         }
     }
 }

@@ -147,7 +147,7 @@ compose.desktop {
         }
 
         nativeDistributions {
-            val appVersion = "1.2.3"
+            val appVersion = "1.2.4"
             modules("java.sql")
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "JiraHelper"

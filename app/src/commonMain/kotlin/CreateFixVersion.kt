@@ -127,8 +127,6 @@ fun CreateFixVersion(
             )
         }
 
-        println("window width class: ${windowSizeClass.widthSizeClass}, height: ${windowSizeClass.widthSizeClass}")
-
         when (getPlatform().type) {
             Type.ANDROID_MOBILE,
             Type.IOS -> {
