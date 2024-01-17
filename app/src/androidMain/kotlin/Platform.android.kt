@@ -56,11 +56,3 @@ actual fun updateFixVersionName(
 actual fun removeFixVersions(versionId: List<String>) {
 
 }
-
-actual fun getApiCredentials(): Credentials? {
-    return null
-}
-
-actual fun updateApiCredentials(credentials: Credentials) {
-
-}

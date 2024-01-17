@@ -1,4 +1,3 @@
-import api.data.Credentials
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.darwin.Darwin
@@ -39,13 +38,5 @@ actual fun updateFixVersionName(
 }
 
 actual fun removeFixVersions(versionId: List<String>) {
-
-}
-
-actual fun getApiCredentials(): Credentials? {
-    return null
-}
-
-actual fun updateApiCredentials(credentials: Credentials) {
 
 }

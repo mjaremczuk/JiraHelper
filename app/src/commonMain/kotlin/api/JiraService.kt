@@ -37,11 +37,11 @@ class JiraService(
     private val jiraProjectApi: JiraProjectApi,
     private val databaseApi: DatabaseApi,
     private val credentialsApi: CredentialsApi,
-    private val ioDispatcher: CoroutineDispatcher,
+    private val dispatchersProvider: DispatchersProvider,
 ) : JiraApi {
 
     override suspend fun removeFixVersion(versionModel: VersionModel) {
-        withContext(ioDispatcher) {
+        withContext(dispatchersProvider.getIoDispatcher()) {
             val credentials = credentialsApi.getCredentials()
             val result = versionModel.projects.map {
                 async {
@@ -56,16 +56,17 @@ class JiraService(
     }
 
     override suspend fun getFixVersions(forceRefresh: Boolean): List<VersionModel> {
-        return withContext(ioDispatcher) {
+        return withContext(dispatchersProvider.getIoDispatcher()) {
+            val projects = jiraProjectApi.getProjects()
             if (forceRefresh.not()) {
                 val savedVersions = databaseApi.getFixVersions()
                 if (savedVersions.isNotEmpty()) {
                     return@withContext savedVersions.asSequence()
-                        .toVersionModel()
+                        .toVersionModel(projects)
                 }
             }
             val credentials = credentialsApi.getCredentials()
-            val results = jiraProjectApi.getProjects().map {
+            val results = projects.map {
                 async { getFixVersionsForProject(it, credentials) }
             }.awaitAll()
 
@@ -77,12 +78,12 @@ class JiraService(
                 .also {
                     databaseApi.save(it.toList())
                 }
-                .toVersionModel()
+                .toVersionModel(projects)
         }
     }
 
     override suspend fun updateVersion(value: VersionModel, new: String) {
-        withContext(ioDispatcher) {
+        withContext(dispatchersProvider.getIoDispatcher()) {
             val credentials = credentialsApi.getCredentials()
             val result = value.projects.map {
                 async {
@@ -97,7 +98,7 @@ class JiraService(
     }
 
     override suspend fun createFixVersion(fixVersionName: String, selectedProjects: List<Int>) {
-        withContext(ioDispatcher) {
+        withContext(dispatchersProvider.getIoDispatcher()) {
             val credentials = credentialsApi.getCredentials()
             val result = selectedProjects.map {
                 async {
@@ -213,16 +214,17 @@ class JiraService(
         return result.status
     }
 
-    private suspend fun Sequence<FixVersion>.toVersionModel(): List<VersionModel> {
+    private suspend fun Sequence<FixVersion>.toVersionModel(projects: List<JiraProject>): List<VersionModel> {
         return groupBy {
             it.name
         }
             .map {
                 VersionModel(
                     it.key,
-                    it.value.map { fixVersion ->
-                        val project = jiraProjectApi.getProjects()
-                            .first { project -> project.id == fixVersion.projectId }
+                    it.value.mapNotNull { fixVersion ->
+                        val project = projects
+                            .firstOrNull { project -> project.id == fixVersion.projectId }
+                            ?: return@mapNotNull null
                         VersionProjectModel(
                             project.key,
                             fixVersion.projectId,

@@ -6,5 +6,5 @@ data class FixVersion(
     val archived: Boolean,
     val released: Boolean,
     val url: String,
-    val projectId: Long,
+    val projectId: Int,
 )

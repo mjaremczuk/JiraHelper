@@ -25,7 +25,3 @@ expect fun getFixVersionList(): List<FixVersion>
 expect fun updateFixVersionName(versionId: List<String>, newName: String)
 
 expect fun removeFixVersions(versionId: List<String>)
-
-expect fun getApiCredentials(): Credentials?
-
-expect fun updateApiCredentials(credentials: Credentials)

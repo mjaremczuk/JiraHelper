@@ -86,7 +86,7 @@ class HomeViewModel(
     private fun showError() {
         uiState.value = HomeUiState.Error(
             message = "Configure credentials to start using the app",
-            ctaLabel = "go to settings",
+            ctaLabel = "Go to settings",
             action = {}, // todo add navigation action
         )
     }

@@ -9,7 +9,7 @@ data class VersionModel(
 @Stable
 data class VersionProjectModel(
     val key: String,
-    val projectId: Long,
+    val projectId: Int,
     val versionId: String,
     val selected: Boolean,
     val released: Boolean,
